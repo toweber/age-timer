@@ -13,8 +13,22 @@ A lightweight, client-side single-page app that displays the exact age of a pers
 - **Persistent storage** – name and date of birth are saved in the browser's `localStorage` and survive every refresh
 - **Settings** – editable at any time via the ⚙️ icon; changes are saved permanently
 - **Dark mode** – toggle with one tap, preference is also persisted
+- **Localization** – UI language adapts automatically to the browser's language setting (English and German supported; falls back to English)
 - **Zero dependencies** – pure HTML/CSS/JavaScript, no external libraries
 - **Responsive** – optimized for both mobile and desktop
+
+---
+
+## 🌍 Localization
+
+The app detects the browser's language via `navigator.language` and renders all UI text in the matching language. The date and time format in the subtitle also adapts accordingly via the browser-native `toLocaleDateString` / `toLocaleTimeString` APIs.
+
+| Browser language | UI language |
+|---|---|
+| `de`, `de-AT`, `de-CH`, … | German 🇩🇪 |
+| anything else | English 🇬🇧 |
+
+To add another language, extend the `TRANSLATIONS` object in `index.html` with a new key (e.g. `fr`) and the corresponding strings.
 
 ---
 
@@ -53,7 +67,7 @@ On the **first visit**, a setup dialog appears automatically:
 
 1. Enter the **name** of the person
 2. Select their **date and time of birth**
-3. Click **"Speichern & starten"** (Save & start)
+3. Click **Save & start**
 
 The data is stored in the browser's `localStorage`. On every subsequent visit the timer starts immediately — no re-entry needed.
 
