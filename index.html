@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Alters-Timer</title>
+  <title>Age Timer</title>
 
   <style>
     :root {
@@ -248,11 +248,11 @@
   <!-- First-run setup overlay -->
   <div id="setupOverlay">
     <div id="setupBox" class="card">
-      <h2>👤 Willkommen!</h2>
-      <p>Gib den Namen und Geburtstag der Person ein. Diese Daten werden lokal gespeichert.</p>
+      <h2 id="t-setupTitle"></h2>
+      <p id="t-setupDesc"></p>
       <input type="text" id="setupName" placeholder="Name" />
       <input type="datetime-local" id="setupBirthdate" />
-      <button class="action" onclick="saveSetup()">Speichern & starten</button>
+      <button class="action" onclick="saveSetup()" id="t-setupBtn"></button>
     </div>
   </div>
 
@@ -268,43 +268,43 @@
       <div class="main-grid">
         <div class="time-box">
           <div class="value" id="years">0</div>
-          <div class="label">Jahre</div>
+          <div class="label" id="t-years"></div>
         </div>
         <div class="time-box">
           <div class="value" id="months">0</div>
-          <div class="label">Monate</div>
+          <div class="label" id="t-months"></div>
         </div>
         <div class="time-box">
           <div class="value" id="days">0</div>
-          <div class="label">Tage</div>
+          <div class="label" id="t-days"></div>
         </div>
         <div class="time-box">
           <div class="value" id="hours">0</div>
-          <div class="label">Stunden</div>
+          <div class="label" id="t-hours"></div>
         </div>
         <div class="time-box">
           <div class="value" id="minutes">0</div>
-          <div class="label">Minuten</div>
+          <div class="label" id="t-minutes"></div>
         </div>
         <div class="time-box">
           <div class="value" id="seconds">0</div>
-          <div class="label">Sekunden</div>
+          <div class="label" id="t-seconds"></div>
         </div>
       </div>
     </div>
 
     <div class="card secondary-card">
-      <div class="text">Gesamt in Monaten</div>
+      <div class="text" id="t-totalMonths"></div>
       <div class="big" id="totalMonths">0</div>
     </div>
 
     <div class="card secondary-card">
-      <div class="text">Gesamt in Wochen</div>
+      <div class="text" id="t-totalWeeks"></div>
       <div class="big" id="totalWeeks">0</div>
     </div>
 
     <div class="card secondary-card">
-      <div class="text">Gesamt in Tagen</div>
+      <div class="text" id="t-totalDays"></div>
       <div class="big" id="totalDays">0</div>
     </div>
 
@@ -313,37 +313,92 @@
   <button class="settings-button" onclick="toggleOptions()">⚙️</button>
 
   <div class="card options" id="optionsMenu">
-    <h2>Daten ändern</h2>
+    <h2 id="t-settingsTitle"></h2>
     <input type="text" id="customName" placeholder="Name" />
     <input type="datetime-local" id="customBirthdate" />
-    <button class="action" onclick="applyCustomData()">Speichern</button>
-    <div class="footer-note">
-      Die Änderungen werden dauerhaft gespeichert.
-    </div>
+    <button class="action" onclick="applyCustomData()" id="t-saveBtn"></button>
+    <div class="footer-note" id="t-saveNote"></div>
   </div>
 
   <script>
+    // ── i18n ──────────────────────────────────────────────────────────────────
+
+    const TRANSLATIONS = {
+      de: {
+        years:        "Jahre",
+        months:       "Monate",
+        days:         "Tage",
+        hours:        "Stunden",
+        minutes:      "Minuten",
+        seconds:      "Sekunden",
+        totalMonths:  "Gesamt in Monaten",
+        totalWeeks:   "Gesamt in Wochen",
+        totalDays:    "Gesamt in Tagen",
+        setupTitle:   "👤 Willkommen!",
+        setupDesc:    "Gib den Namen und Geburtstag der Person ein. Diese Daten werden lokal gespeichert.",
+        setupBtn:     "Speichern & starten",
+        settingsTitle:"Daten ändern",
+        saveBtn:      "Speichern",
+        saveNote:     "Die Änderungen werden dauerhaft gespeichert.",
+        alertEmpty:   "Bitte Namen und Geburtstag eingeben.",
+        bornOn:       (date, time) => `Geboren am ${date} um ${time} Uhr`,
+        locale:       "de-DE",
+      },
+      en: {
+        years:        "Years",
+        months:       "Months",
+        days:         "Days",
+        hours:        "Hours",
+        minutes:      "Minutes",
+        seconds:      "Seconds",
+        totalMonths:  "Total months",
+        totalWeeks:   "Total weeks",
+        totalDays:    "Total days",
+        setupTitle:   "👤 Welcome!",
+        setupDesc:    "Enter the name and date of birth of the person. This data is stored locally.",
+        setupBtn:     "Save & start",
+        settingsTitle:"Edit data",
+        saveBtn:      "Save",
+        saveNote:     "Changes are saved permanently.",
+        alertEmpty:   "Please enter a name and date of birth.",
+        bornOn:       (date, time) => `Born on ${date} at ${time}`,
+        locale:       "en-GB",
+      },
+    };
+
+    // Detect browser language; fall back to English
+    const browserLang = (navigator.language || "en").slice(0, 2).toLowerCase();
+    const t = TRANSLATIONS[browserLang] ?? TRANSLATIONS["en"];
+
+    // Set <html lang> attribute to match
+    document.documentElement.lang = browserLang === "de" ? "de" : "en";
+
+    function applyTranslations() {
+      document.getElementById("t-setupTitle").textContent   = t.setupTitle;
+      document.getElementById("t-setupDesc").textContent    = t.setupDesc;
+      document.getElementById("t-setupBtn").textContent     = t.setupBtn;
+      document.getElementById("t-years").textContent        = t.years;
+      document.getElementById("t-months").textContent       = t.months;
+      document.getElementById("t-days").textContent         = t.days;
+      document.getElementById("t-hours").textContent        = t.hours;
+      document.getElementById("t-minutes").textContent      = t.minutes;
+      document.getElementById("t-seconds").textContent      = t.seconds;
+      document.getElementById("t-totalMonths").textContent  = t.totalMonths;
+      document.getElementById("t-totalWeeks").textContent   = t.totalWeeks;
+      document.getElementById("t-totalDays").textContent    = t.totalDays;
+      document.getElementById("t-settingsTitle").textContent = t.settingsTitle;
+      document.getElementById("t-saveBtn").textContent      = t.saveBtn;
+      document.getElementById("t-saveNote").textContent     = t.saveNote;
+    }
+
+    // ── Storage ───────────────────────────────────────────────────────────────
+
     const STORAGE_KEY_NAME      = "timer_name";
     const STORAGE_KEY_BIRTHDATE = "timer_birthdate";
 
     let currentName      = "";
     let currentBirthdate = null;
 
-    // ── Theme ──
-    function applyTheme(isDark) {
-      document.body.classList.toggle("dark", isDark);
-      document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
-    }
-
-    function toggleTheme() {
-      const isDark = document.body.classList.toggle("dark");
-      localStorage.setItem("theme", isDark ? "dark" : "light");
-      document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
-    }
-
-    applyTheme(localStorage.getItem("theme") === "dark");
-
-    // ── Storage helpers ──
     function loadFromStorage() {
       const name      = localStorage.getItem(STORAGE_KEY_NAME);
       const birthdate = localStorage.getItem(STORAGE_KEY_BIRTHDATE);
@@ -360,7 +415,23 @@
       localStorage.setItem(STORAGE_KEY_BIRTHDATE, birthdateISO);
     }
 
-    // ── First-run setup ──
+    // ── Theme ─────────────────────────────────────────────────────────────────
+
+    function applyTheme(isDark) {
+      document.body.classList.toggle("dark", isDark);
+      document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
+    }
+
+    function toggleTheme() {
+      const isDark = document.body.classList.toggle("dark");
+      localStorage.setItem("theme", isDark ? "dark" : "light");
+      document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
+    }
+
+    applyTheme(localStorage.getItem("theme") === "dark");
+
+    // ── First-run setup ───────────────────────────────────────────────────────
+
     function showSetup() {
       document.getElementById("setupOverlay").classList.add("visible");
     }
@@ -370,7 +441,7 @@
       const birthdate = document.getElementById("setupBirthdate").value;
 
       if (!name || !birthdate) {
-        alert("Bitte Namen und Geburtstag eingeben.");
+        alert(t.alertEmpty);
         return;
       }
 
@@ -382,7 +453,8 @@
       updateUI();
     }
 
-    // ── Age calculation ──
+    // ── Age calculation ───────────────────────────────────────────────────────
+
     function daysInMonth(year, month) {
       return new Date(year, month + 1, 0).getDate();
     }
@@ -414,6 +486,8 @@
       return { years, months, days, hours, minutes, seconds };
     }
 
+    // ── UI update ─────────────────────────────────────────────────────────────
+
     function updateUI() {
       if (!currentBirthdate) return;
 
@@ -421,8 +495,10 @@
       const age = calculateDetailedAge(currentBirthdate, now);
 
       document.getElementById("personName").textContent = currentName;
-      document.getElementById("birthInfo").textContent =
-      `Geboren am ${currentBirthdate.toLocaleDateString("de-DE")} um ${currentBirthdate.toLocaleTimeString("de-DE", { hour: "2-digit", minute: "2-digit" })} Uhr`;
+
+      const dateStr = currentBirthdate.toLocaleDateString(t.locale);
+      const timeStr = currentBirthdate.toLocaleTimeString(t.locale, { hour: "2-digit", minute: "2-digit" });
+      document.getElementById("birthInfo").textContent = t.bornOn(dateStr, timeStr);
 
       document.getElementById("years").textContent   = age.years;
       document.getElementById("months").textContent  = age.months;
@@ -431,9 +507,9 @@
       document.getElementById("minutes").textContent = age.minutes;
       document.getElementById("seconds").textContent = age.seconds;
 
-      const diffMs     = now - currentBirthdate;
-      const totalDays  = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-      const totalWeeks = Math.floor(totalDays / 7);
+      const diffMs      = now - currentBirthdate;
+      const totalDays   = Math.floor(diffMs / (1000 * 60 * 60 * 24));
+      const totalWeeks  = Math.floor(totalDays / 7);
       const totalMonths = age.years * 12 + age.months;
 
       document.getElementById("totalMonths").textContent = totalMonths;
@@ -441,16 +517,15 @@
       document.getElementById("totalDays").textContent   = totalDays;
     }
 
-    // ── Settings panel ──
+    // ── Settings panel ────────────────────────────────────────────────────────
+
     function toggleOptions() {
-      const menu = document.getElementById("optionsMenu");
+      const menu      = document.getElementById("optionsMenu");
       const isOpening = !menu.classList.contains("visible");
 
       if (isOpening) {
-        // Pre-fill with current values
         document.getElementById("customName").value = currentName;
         if (currentBirthdate) {
-          // datetime-local needs format "YYYY-MM-DDTHH:MM"
           const pad = n => String(n).padStart(2, "0");
           const d   = currentBirthdate;
           document.getElementById("customBirthdate").value =
@@ -466,7 +541,7 @@
       const birthdate = document.getElementById("customBirthdate").value;
 
       if (!name || !birthdate) {
-        alert("Bitte Namen und Geburtstag eingeben.");
+        alert(t.alertEmpty);
         return;
       }
 
@@ -479,7 +554,10 @@
       toggleOptions();
     }
 
-    // ── Init ──
+    // ── Init ──────────────────────────────────────────────────────────────────
+
+    applyTranslations();
+
     if (loadFromStorage()) {
       updateUI();
     } else {
