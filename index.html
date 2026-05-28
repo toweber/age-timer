@@ -198,6 +198,89 @@ button.action {
   cursor: pointer;
 }
 
+/* ── Toggle switch ── */
+.toggle-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 0;
+}
+
+.toggle-row .toggle-label {
+  font-size: 1rem;
+  color: var(--text);
+}
+
+.toggle-row .toggle-label span {
+  color: var(--muted);
+  font-size: 0.85rem;
+  margin-left: 6px;
+}
+
+.switch {
+  position: relative;
+  width: 48px;
+  height: 26px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background: var(--border);
+  border-radius: 999px;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.slider::before {
+  content: "";
+  position: absolute;
+  width: 20px;
+  height: 20px;
+  left: 3px;
+  top: 3px;
+  background: white;
+  border-radius: 50%;
+  transition: transform 0.2s;
+}
+
+.switch input:checked + .slider {
+  background: var(--primary);
+}
+
+.switch input:checked + .slider::before {
+  transform: translateX(22px);
+}
+
+.divider {
+  height: 1px;
+  background: var(--border);
+  margin: 4px 0;
+}
+
+#manualDateRow {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#manualDateRow.visible {
+  display: flex;
+}
+
+#manualDateRow .section-label {
+  font-size: 0.85rem;
+  color: var(--muted);
+}
+
 .footer-note {
   text-align: center;
   color: var(--muted);
@@ -205,7 +288,40 @@ button.action {
   margin-top: 8px;
 }
 
-/* ── First-run overlay ── */
+/* ── Manual date banner ── */
+#manualBanner {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: rgba(245, 158, 11, 0.12);
+  border: 1px solid rgba(245, 158, 11, 0.35);
+  border-radius: 16px;
+  padding: 12px 16px;
+  font-size: 0.9rem;
+  color: var(--text);
+}
+
+#manualBanner.visible {
+  display: flex;
+}
+
+#manualBanner .banner-icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+
+#manualBanner .banner-text {
+  flex: 1;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+#manualBanner .banner-text strong {
+  display: block;
+  color: var(--text);
+  font-weight: 700;
+  font-size: 0.95rem;
+}
 #setupOverlay {
   display: none;
   position: fixed;
@@ -273,6 +389,15 @@ button.action {
     <div class="subtitle" id="birthInfo"></div>
   </div>
 
+  <!-- Manual date banner – shown when live mode is off -->
+  <div id="manualBanner">
+    <div class="banner-icon">📅</div>
+    <div class="banner-text">
+      <strong id="bannerDate"></strong>
+      <span id="t-bannerLabel"></span>
+    </div>
+  </div>
+
   <div class="card">
     <div class="main-grid">
       <div class="time-box">
@@ -325,6 +450,22 @@ button.action {
       <input type="datetime-local" id="customBirthdate" />
       <button class="action" onclick="applyCustomData()" id="t-saveBtn"></button>
       <div class="footer-note" id="t-saveNote"></div>
+
+      <div class="divider"></div>
+
+      <!-- Live / manual date toggle -->
+      <div class="toggle-row">
+        <div class="toggle-label" id="t-liveLabel"></div>
+        <label class="switch">
+          <input type="checkbox" id="liveToggle" checked onchange="handleLiveToggle()" />
+          <span class="slider"></span>
+        </label>
+      </div>
+
+      <div id="manualDateRow">
+        <div class="section-label" id="t-manualLabel"></div>
+        <input type="datetime-local" id="manualDate" onchange="handleManualDateChange()" />
+      </div>
     </div>
   </div>
 
@@ -350,6 +491,9 @@ const TRANSLATIONS = {
     saveBtn: "Speichern",
     saveNote: "Die Änderungen werden dauerhaft gespeichert.",
     alertEmpty: "Bitte Namen und Geburtstag eingeben.",
+    liveLabel: "Live",
+    manualLabel: "Alter berechnen zum Datum:",
+    bannerLabel: "Kein Live-Modus – Alter zu diesem Datum",
     bornOn: (date, time) => `Geboren am ${date} um ${time} Uhr`,
     locale: "de-DE",
   },
@@ -370,6 +514,9 @@ const TRANSLATIONS = {
     saveBtn: "Save",
     saveNote: "Changes are saved permanently.",
     alertEmpty: "Please enter a name and date of birth.",
+    liveLabel: "Live",
+    manualLabel: "Calculate age at date:",
+    bannerLabel: "Not live – age at this date",
     bornOn: (date, time) => `Born on ${date} at ${time}`,
     locale: "en-GB",
   },
@@ -395,6 +542,9 @@ function applyTranslations() {
   document.getElementById("t-settingsTitle").textContent = t.settingsTitle;
   document.getElementById("t-saveBtn").textContent = t.saveBtn;
   document.getElementById("t-saveNote").textContent = t.saveNote;
+  document.getElementById("t-liveLabel").textContent = t.liveLabel;
+  document.getElementById("t-manualLabel").textContent = t.manualLabel;
+  document.getElementById("t-bannerLabel").textContent = t.bannerLabel;
 }
 
 // ── Storage ───────────────────────────────────────────────────────────────
@@ -402,6 +552,8 @@ const STORAGE_KEY_NAME = "timer_name";
 const STORAGE_KEY_BIRTHDATE = "timer_birthdate";
 let currentName = "";
 let currentBirthdate = null;
+let isLive = true;
+let manualDate = null;
 
 function loadFromStorage() {
   const name = localStorage.getItem(STORAGE_KEY_NAME);
@@ -483,7 +635,7 @@ function calculateDetailedAge(birthDate, now) {
 // ── UI update ─────────────────────────────────────────────────────────────
 function updateUI() {
   if (!currentBirthdate) return;
-  const now = new Date();
+  const now = isLive ? new Date() : (manualDate || new Date());
   const age = calculateDetailedAge(currentBirthdate, now);
 
   document.getElementById("personName").textContent = currentName;
@@ -506,6 +658,44 @@ function updateUI() {
   document.getElementById("totalMonths").textContent = totalMonths;
   document.getElementById("totalWeeks").textContent = totalWeeks;
   document.getElementById("totalDays").textContent = totalDays;
+
+  // Banner
+  const banner = document.getElementById("manualBanner");
+  if (!isLive && manualDate) {
+    const dateStr = manualDate.toLocaleDateString(t.locale, { day: "numeric", month: "long", year: "numeric" });
+    const timeStr = manualDate.toLocaleTimeString(t.locale, { hour: "2-digit", minute: "2-digit" });
+    document.getElementById("bannerDate").textContent = `${dateStr}, ${timeStr}`;
+    banner.classList.add("visible");
+  } else {
+    banner.classList.remove("visible");
+  }
+}
+
+// ── Live / manual date toggle ─────────────────────────────────────────────
+function handleLiveToggle() {
+  isLive = document.getElementById("liveToggle").checked;
+  const row = document.getElementById("manualDateRow");
+  if (isLive) {
+    row.classList.remove("visible");
+    manualDate = null;
+  } else {
+    row.classList.add("visible");
+    // Pre-fill with current date/time
+    const pad = n => String(n).padStart(2, "0");
+    const d = new Date();
+    document.getElementById("manualDate").value =
+      `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
+    manualDate = d;
+  }
+  updateUI();
+}
+
+function handleManualDateChange() {
+  const val = document.getElementById("manualDate").value;
+  if (val) {
+    manualDate = new Date(val);
+    updateUI();
+  }
 }
 
 // ── Settings panel ────────────────────────────────────────────────────────
@@ -520,6 +710,9 @@ function toggleOptions() {
       document.getElementById("customBirthdate").value =
         `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
+    // Sync toggle state
+    document.getElementById("liveToggle").checked = isLive;
+    document.getElementById("manualDateRow").classList.toggle("visible", !isLive);
   }
   overlay.classList.toggle("visible");
 }
@@ -552,7 +745,7 @@ if (loadFromStorage()) {
 } else {
   showSetup();
 }
-setInterval(updateUI, 1000);
+setInterval(() => { if (isLive) updateUI(); }, 1000);
 </script>
 </body>
 </html>
