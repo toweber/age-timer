@@ -6,167 +6,142 @@
 <title>Age Timer</title>
 <style>
 :root {
-  --bg1: #f8fafc;
-  --bg2: #e2e8f0;
-  --card: rgba(255, 255, 255, 0.92);
-  --text: #0f172a;
-  --muted: #64748b;
-  --border: #e2e8f0;
-  --box: #ffffff;
-  --primary: #2563eb;
+  --bg1: #f8fafc; --bg2: #e2e8f0; --card: rgba(255,255,255,0.92);
+  --text: #0f172a; --muted: #64748b; --border: #e2e8f0; --box: #ffffff; --primary: #2563eb;
 }
-
 body.dark {
-  --bg1: #020617;
-  --bg2: #111827;
-  --card: rgba(15, 23, 42, 0.92);
-  --text: #f8fafc;
-  --muted: #94a3b8;
-  --border: #1e293b;
-  --box: #0f172a;
-  --primary: #3b82f6;
+  --bg1: #020617; --bg2: #111827; --card: rgba(15,23,42,0.92);
+  --text: #f8fafc; --muted: #94a3b8; --border: #1e293b; --box: #0f172a; --primary: #3b82f6;
 }
-
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   background: linear-gradient(180deg, var(--bg1) 0%, var(--bg2) 100%);
-  color: var(--text);
-  min-height: 100vh;
-  padding: 20px;
-  display: flex;
-  justify-content: center;
+  color: var(--text); min-height: 100vh; padding: 20px; display: flex; justify-content: center;
 }
-
 .container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 18px; }
-
-.card { background: var(--card); backdrop-filter: blur(10px); border-radius: 24px; padding: 22px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08); }
-
+.card { background: var(--card); backdrop-filter: blur(10px); border-radius: 24px; padding: 22px; box-shadow: 0 10px 30px rgba(15,23,42,0.08); }
 .header { position: relative; text-align: center; padding-top: 30px; padding-bottom: 30px; }
-
 .header-icons { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
-
 .theme-toggle { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--box); color: var(--text); font-size: 0.95rem; cursor: pointer; }
-
 h1 { font-size: 2.4rem; margin-bottom: 10px; font-weight: 800; }
-
 .subtitle { color: var(--muted); font-size: 1rem; }
-
 .main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-
 .time-box { background: var(--box); border-radius: 18px; padding: 18px 12px; text-align: center; border: 1px solid var(--border); }
-
 .value { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
-
 .label { color: var(--muted); font-size: 0.95rem; font-weight: 500; }
 
-.secondary-card { display: flex; justify-content: space-between; align-items: center; }
-
-.secondary-card .big { font-size: 2rem; font-weight: 800; }
-
-.secondary-card .text { color: var(--muted); font-size: 1rem; }
-
-#optionsOverlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-  z-index: 100;
-  align-items: flex-start;
-  justify-content: center;
-  padding: 20px;
-  padding-top: 140px;
+/* ── Progress card ── */
+.progress-card {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-radius: 20px;
+  padding: 20px 22px;
+  background: var(--card);
+  box-shadow: 0 10px 30px rgba(15,23,42,0.08);
+  cursor: pointer;
+  user-select: none;
+  min-height: 68px;
 }
 
+.progress-fill {
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  border-radius: 20px;
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+  z-index: 0;
+}
+
+/* Linke Seite: Hauptlabel immer zentriert, next-label als Overlay darunter */
+.progress-card .text {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: center;
+}
+
+.main-label {
+  color: var(--muted);
+  font-size: 1rem;
+  transition: transform 0.2s ease;
+}
+
+/* next-label absolut unter dem main-label, damit das Layout nicht springt */
+.next-label {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  font-size: 0.76rem;
+  color: var(--muted);
+  opacity: 0;
+  transform: translateY(-2px);
+  transition: opacity 0.2s ease, transform 0.2s ease;
+  white-space: nowrap;
+  pointer-events: none;
+  margin-top: 3px;
+}
+
+/* Wenn next-label sichtbar: main-label leicht nach oben verschieben */
+.progress-card:hover .main-label,
+.progress-card.pinned .main-label {
+  transform: translateY(-8px);
+}
+
+.progress-card:hover .next-label,
+.progress-card.pinned .next-label {
+  opacity: 0.7;
+  transform: translateY(0);
+}
+
+.progress-card .big {
+  font-size: 2rem;
+  font-weight: 800;
+  position: relative;
+  z-index: 1;
+}
+
+.fill-months { background: rgba(37,99,235,0.10); }
+body.dark .fill-months { background: rgba(59,130,246,0.13); }
+.fill-weeks  { background: rgba(16,185,129,0.10); }
+body.dark .fill-weeks  { background: rgba(16,185,129,0.14); }
+.fill-days   { background: rgba(139,92,246,0.10); }
+body.dark .fill-days   { background: rgba(139,92,246,0.14); }
+
+#optionsOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); z-index: 100; align-items: flex-start; justify-content: center; padding: 20px; padding-top: 140px; }
 #optionsOverlay.visible { display: flex; }
-
-.options { background: var(--card); border-radius: 24px; padding: 24px; width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
-
+.options { background: var(--card); border-radius: 24px; padding: 24px; width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
 input { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--box); color: var(--text); font-size: 1rem; outline: none; color-scheme: light; }
-
 body.dark input { color-scheme: dark; }
-
 button.action { border: none; background: var(--primary); color: white; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; }
-
 .toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
 .toggle-row .toggle-label { font-size: 1rem; color: var(--text); }
-.toggle-row .toggle-label span { color: var(--muted); font-size: 0.85rem; margin-left: 6px; }
-
 .switch { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
 .switch input { opacity: 0; width: 0; height: 0; position: absolute; }
-
 .slider { position: absolute; inset: 0; background: var(--border); border-radius: 999px; cursor: pointer; transition: background 0.2s; }
 .slider::before { content: ""; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; }
 .switch input:checked + .slider { background: var(--primary); }
 .switch input:checked + .slider::before { transform: translateX(22px); }
-
 .divider { height: 1px; background: var(--border); margin: 4px 0; }
-
 #manualDateRow { display: none; flex-direction: column; gap: 8px; }
 #manualDateRow.visible { display: flex; }
 #manualDateRow .section-label { font-size: 0.85rem; color: var(--muted); }
-
 .footer-note { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
 
-/* ── Manual date banner ── */
-#manualBanner {
-  display: none;
-  flex-direction: column;
-  gap: 12px;
-  background: rgba(245, 158, 11, 0.12);
-  border: 1px solid rgba(245, 158, 11, 0.35);
-  border-radius: 16px;
-  padding: 14px 16px;
-  font-size: 0.9rem;
-  color: var(--text);
-}
-
+#manualBanner { display: none; flex-direction: column; gap: 12px; background: rgba(245,158,11,0.12); border: 1px solid rgba(245,158,11,0.35); border-radius: 16px; padding: 14px 16px; font-size: 0.9rem; color: var(--text); }
 #manualBanner.visible { display: flex; }
-
 .banner-top { display: flex; align-items: center; gap: 10px; }
-
 .banner-icon { font-size: 1.1rem; flex-shrink: 0; }
-
 .banner-text { flex: 1; color: var(--muted); line-height: 1.4; }
 .banner-text strong { display: block; color: var(--text); font-weight: 700; font-size: 0.95rem; }
+#backToLiveBtn { border: none; background: rgba(245,158,11,0.22); color: var(--text); padding: 9px 14px; border-radius: 12px; font-size: 0.88rem; font-weight: 700; cursor: pointer; display: flex; align-items: center; gap: 6px; width: 100%; justify-content: center; transition: background 0.15s; }
+#backToLiveBtn:hover { background: rgba(245,158,11,0.38); }
 
-/* Live-Modus-Button im Banner */
-#backToLiveBtn {
-  border: none;
-  background: rgba(245, 158, 11, 0.22);
-  color: var(--text);
-  padding: 9px 14px;
-  border-radius: 12px;
-  font-size: 0.88rem;
-  font-weight: 700;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
-  justify-content: center;
-  transition: background 0.15s;
-}
-
-#backToLiveBtn:hover { background: rgba(245, 158, 11, 0.38); }
-
-#setupOverlay {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  backdrop-filter: blur(6px);
-  z-index: 100;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-
+#setupOverlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(6px); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
 #setupOverlay.visible { display: flex; }
-
-#setupBox { background: var(--card); border-radius: 24px; padding: 28px 24px; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+#setupBox { background: var(--card); border-radius: 24px; padding: 28px 24px; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0,0,0,0.3); }
 #setupBox h2 { font-size: 1.5rem; font-weight: 800; text-align: center; }
 #setupBox p { color: var(--muted); font-size: 0.95rem; text-align: center; margin-top: -6px; }
 </style>
@@ -194,7 +169,6 @@ button.action { border: none; background: var(--primary); color: white; padding:
     <div class="subtitle" id="birthInfo"></div>
   </div>
 
-  <!-- Manual date banner -->
   <div id="manualBanner">
     <div class="banner-top">
       <div class="banner-icon">📅</div>
@@ -203,9 +177,7 @@ button.action { border: none; background: var(--primary); color: white; padding:
         <span id="t-bannerLabel"></span>
       </div>
     </div>
-    <button id="backToLiveBtn" onclick="switchToLive()">
-      ▶ <span id="t-backToLive"></span>
-    </button>
+    <button id="backToLiveBtn" onclick="switchToLive()">▶ <span id="t-backToLive"></span></button>
   </div>
 
   <div class="card">
@@ -219,18 +191,30 @@ button.action { border: none; background: var(--primary); color: white; padding:
     </div>
   </div>
 
-  <div class="card secondary-card">
-    <div class="text" id="t-totalMonths"></div>
+  <div class="progress-card" onclick="togglePin(this)">
+    <div class="progress-fill fill-months" id="fill-months"></div>
+    <div class="text">
+      <span class="main-label" id="t-totalMonths"></span>
+      <span class="next-label" id="next-months"></span>
+    </div>
     <div class="big" id="totalMonths">0</div>
   </div>
 
-  <div class="card secondary-card">
-    <div class="text" id="t-totalWeeks"></div>
+  <div class="progress-card" onclick="togglePin(this)">
+    <div class="progress-fill fill-weeks" id="fill-weeks"></div>
+    <div class="text">
+      <span class="main-label" id="t-totalWeeks"></span>
+      <span class="next-label" id="next-weeks"></span>
+    </div>
     <div class="big" id="totalWeeks">0</div>
   </div>
 
-  <div class="card secondary-card">
-    <div class="text" id="t-totalDays"></div>
+  <div class="progress-card" onclick="togglePin(this)">
+    <div class="progress-fill fill-days" id="fill-days"></div>
+    <div class="text">
+      <span class="main-label" id="t-totalDays"></span>
+      <span class="next-label" id="next-days"></span>
+    </div>
     <div class="big" id="totalDays">0</div>
   </div>
 
@@ -241,9 +225,7 @@ button.action { border: none; background: var(--primary); color: white; padding:
       <input type="datetime-local" id="customBirthdate" />
       <button class="action" onclick="applyCustomData()" id="t-saveBtn"></button>
       <div class="footer-note" id="t-saveNote"></div>
-
       <div class="divider"></div>
-
       <div class="toggle-row">
         <div class="toggle-label" id="t-liveLabel"></div>
         <label class="switch">
@@ -251,7 +233,6 @@ button.action { border: none; background: var(--primary); color: white; padding:
           <span class="slider"></span>
         </label>
       </div>
-
       <div id="manualDateRow">
         <div class="section-label" id="t-manualLabel"></div>
         <input type="datetime-local" id="manualDate" onchange="handleManualDateChange()" />
@@ -264,228 +245,135 @@ button.action { border: none; background: var(--primary); color: white; padding:
 <script>
 const TRANSLATIONS = {
   de: {
-    years: "Jahre", months: "Monate", days: "Tage", hours: "Stunden", minutes: "Minuten", seconds: "Sekunden",
-    totalMonths: "Gesamt in Monaten", totalWeeks: "Gesamt in Wochen", totalDays: "Gesamt in Tagen",
-    setupTitle: "👤 Willkommen!", setupDesc: "Gib den Namen und Geburtstag der Person ein. Diese Daten werden lokal gespeichert.",
-    setupBtn: "Speichern & starten", settingsTitle: "Daten ändern", saveBtn: "Speichern",
-    saveNote: "Die Änderungen werden dauerhaft gespeichert.", alertEmpty: "Bitte Namen und Geburtstag eingeben.",
-    liveLabel: "Live", manualLabel: "Alter berechnen zum Datum:", bannerLabel: "Kein Live-Modus – Alter zu diesem Datum",
-    backToLive: "Zurück zum Live-Modus",
-    bornOn: (date, time) => `Geboren am ${date} um ${time} Uhr`, locale: "de-DE",
+    years:"Jahre", months:"Monate", days:"Tage", hours:"Stunden", minutes:"Minuten", seconds:"Sekunden",
+    totalMonths:"Gesamt in Monaten", totalWeeks:"Gesamt in Wochen", totalDays:"Gesamt in Tagen",
+    setupTitle:"👤 Willkommen!", setupDesc:"Gib den Namen und Geburtstag der Person ein. Diese Daten werden lokal gespeichert.",
+    setupBtn:"Speichern & starten", settingsTitle:"Daten ändern", saveBtn:"Speichern",
+    saveNote:"Die Änderungen werden dauerhaft gespeichert.", alertEmpty:"Bitte Namen und Geburtstag eingeben.",
+    liveLabel:"Live", manualLabel:"Alter berechnen zum Datum:", bannerLabel:"Kein Live-Modus – Alter zu diesem Datum",
+    backToLive:"Zurück zum Live-Modus",
+    nextMonth: d => `noch ${d} Tag${d===1?'':'e'} bis Monat +1`,
+    nextWeek:  d => `noch ${d} Tag${d===1?'':'e'} bis Woche +1`,
+    nextDay:   h => `noch ${h} Std. bis Tag +1`,
+    bornOn: (date, time) => `Geboren am ${date} um ${time} Uhr`, locale:"de-DE",
   },
   en: {
-    years: "Years", months: "Months", days: "Days", hours: "Hours", minutes: "Minutes", seconds: "Seconds",
-    totalMonths: "Total months", totalWeeks: "Total weeks", totalDays: "Total days",
-    setupTitle: "👤 Welcome!", setupDesc: "Enter the name and date of birth of the person. This data is stored locally.",
-    setupBtn: "Save & start", settingsTitle: "Edit data", saveBtn: "Save",
-    saveNote: "Changes are saved permanently.", alertEmpty: "Please enter a name and date of birth.",
-    liveLabel: "Live", manualLabel: "Calculate age at date:", bannerLabel: "Not live – age at this date",
-    backToLive: "Back to live mode",
-    bornOn: (date, time) => `Born on ${date} at ${time}`, locale: "en-GB",
+    years:"Years", months:"Months", days:"Days", hours:"Hours", minutes:"Minutes", seconds:"Seconds",
+    totalMonths:"Total months", totalWeeks:"Total weeks", totalDays:"Total days",
+    setupTitle:"👤 Welcome!", setupDesc:"Enter the name and date of birth. Data is stored locally.",
+    setupBtn:"Save & start", settingsTitle:"Edit data", saveBtn:"Save",
+    saveNote:"Changes are saved permanently.", alertEmpty:"Please enter a name and date of birth.",
+    liveLabel:"Live", manualLabel:"Calculate age at date:", bannerLabel:"Not live – age at this date",
+    backToLive:"Back to live mode",
+    nextMonth: d => `${d} day${d===1?'':'s'} until month +1`,
+    nextWeek:  d => `${d} day${d===1?'':'s'} until week +1`,
+    nextDay:   h => `${h} hr${h===1?'':'s'} until day +1`,
+    bornOn: (date, time) => `Born on ${date} at ${time}`, locale:"en-GB",
   },
 };
 
-const browserLang = (navigator.language || "en").slice(0, 2).toLowerCase();
-const t = TRANSLATIONS[browserLang] ?? TRANSLATIONS["en"];
-document.documentElement.lang = browserLang === "de" ? "de" : "en";
+const browserLang=(navigator.language||"en").slice(0,2).toLowerCase();
+const t=TRANSLATIONS[browserLang]??TRANSLATIONS["en"];
+document.documentElement.lang=browserLang==="de"?"de":"en";
 
-function applyTranslations() {
-  document.getElementById("t-setupTitle").textContent = t.setupTitle;
-  document.getElementById("t-setupDesc").textContent = t.setupDesc;
-  document.getElementById("t-setupBtn").textContent = t.setupBtn;
-  document.getElementById("t-years").textContent = t.years;
-  document.getElementById("t-months").textContent = t.months;
-  document.getElementById("t-days").textContent = t.days;
-  document.getElementById("t-hours").textContent = t.hours;
-  document.getElementById("t-minutes").textContent = t.minutes;
-  document.getElementById("t-seconds").textContent = t.seconds;
-  document.getElementById("t-totalMonths").textContent = t.totalMonths;
-  document.getElementById("t-totalWeeks").textContent = t.totalWeeks;
-  document.getElementById("t-totalDays").textContent = t.totalDays;
-  document.getElementById("t-settingsTitle").textContent = t.settingsTitle;
-  document.getElementById("t-saveBtn").textContent = t.saveBtn;
-  document.getElementById("t-saveNote").textContent = t.saveNote;
-  document.getElementById("t-liveLabel").textContent = t.liveLabel;
-  document.getElementById("t-manualLabel").textContent = t.manualLabel;
-  document.getElementById("t-bannerLabel").textContent = t.bannerLabel;
-  document.getElementById("t-backToLive").textContent = t.backToLive;
+function applyTranslations(){
+  ["setupTitle","setupDesc","setupBtn","years","months","days","hours","minutes","seconds",
+   "totalMonths","totalWeeks","totalDays","settingsTitle","saveBtn","saveNote","liveLabel",
+   "manualLabel","bannerLabel","backToLive"].forEach(id=>{
+    const el=document.getElementById("t-"+id);if(el)el.textContent=t[id];
+  });
 }
 
-const STORAGE_KEY_NAME = "timer_name";
-const STORAGE_KEY_BIRTHDATE = "timer_birthdate";
-let currentName = "";
-let currentBirthdate = null;
-let isLive = true;
-let manualDate = null;
+const STORAGE_KEY_NAME="timer_name",STORAGE_KEY_BIRTHDATE="timer_birthdate";
+let currentName="",currentBirthdate=null,isLive=true,manualDate=null;
 
-function loadFromStorage() {
-  const name = localStorage.getItem(STORAGE_KEY_NAME);
-  const birthdate = localStorage.getItem(STORAGE_KEY_BIRTHDATE);
-  if (name && birthdate) { currentName = name; currentBirthdate = new Date(birthdate); return true; }
-  return false;
+function loadFromStorage(){
+  const name=localStorage.getItem(STORAGE_KEY_NAME),bd=localStorage.getItem(STORAGE_KEY_BIRTHDATE);
+  if(name&&bd){currentName=name;currentBirthdate=new Date(bd);return true;}return false;
 }
-
-function saveToStorage(name, birthdateISO) {
-  localStorage.setItem(STORAGE_KEY_NAME, name);
-  localStorage.setItem(STORAGE_KEY_BIRTHDATE, birthdateISO);
+function saveToStorage(name,iso){localStorage.setItem(STORAGE_KEY_NAME,name);localStorage.setItem(STORAGE_KEY_BIRTHDATE,iso);}
+function applyTheme(d){document.body.classList.toggle("dark",d);document.getElementById("themeToggleBtn").textContent=d?"☀️":"🌙";}
+function toggleTheme(){const d=document.body.classList.toggle("dark");localStorage.setItem("theme",d?"dark":"light");document.getElementById("themeToggleBtn").textContent=d?"☀️":"🌙";}
+applyTheme(localStorage.getItem("theme")==="dark");
+function showSetup(){document.getElementById("setupOverlay").classList.add("visible");}
+function saveSetup(){
+  const name=document.getElementById("setupName").value.trim(),bd=document.getElementById("setupBirthdate").value;
+  if(!name||!bd){alert(t.alertEmpty);return;}
+  saveToStorage(name,new Date(bd).toISOString());currentName=name;currentBirthdate=new Date(bd);
+  document.getElementById("setupOverlay").classList.remove("visible");updateUI();
 }
-
-function applyTheme(isDark) {
-  document.body.classList.toggle("dark", isDark);
-  document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
+function togglePin(card){card.classList.toggle("pinned");}
+function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+function calculateDetailedAge(birth,now){
+  let years=now.getFullYear()-birth.getFullYear(),months=now.getMonth()-birth.getMonth();
+  const anchorDay=Math.min(birth.getDate(),daysInMonth(now.getFullYear(),now.getMonth()));
+  let days=now.getDate()-anchorDay,hours=now.getHours()-birth.getHours(),
+      minutes=now.getMinutes()-birth.getMinutes(),seconds=now.getSeconds()-birth.getSeconds();
+  if(seconds<0){seconds+=60;minutes--;}if(minutes<0){minutes+=60;hours--;}if(hours<0){hours+=24;days--;}
+  if(days<0){const pm=(now.getMonth()-1+12)%12,pmy=pm===11?now.getFullYear()-1:now.getFullYear();days+=daysInMonth(pmy,pm);months--;}
+  if(months<0){months+=12;years--;}
+  return{years,months,days,hours,minutes,seconds};
 }
-
-function toggleTheme() {
-  const isDark = document.body.classList.toggle("dark");
-  localStorage.setItem("theme", isDark ? "dark" : "light");
-  document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
+function setProgress(fillId,nextId,pct,nextLabel){
+  document.getElementById(fillId).style.width=pct.toFixed(1)+"%";
+  document.getElementById(nextId).textContent=nextLabel;
 }
-
-applyTheme(localStorage.getItem("theme") === "dark");
-
-function showSetup() { document.getElementById("setupOverlay").classList.add("visible"); }
-
-function saveSetup() {
-  const name = document.getElementById("setupName").value.trim();
-  const birthdate = document.getElementById("setupBirthdate").value;
-  if (!name || !birthdate) { alert(t.alertEmpty); return; }
-  saveToStorage(name, new Date(birthdate).toISOString());
-  currentName = name;
-  currentBirthdate = new Date(birthdate);
-  document.getElementById("setupOverlay").classList.remove("visible");
+function updateUI(){
+  if(!currentBirthdate)return;
+  const now=isLive?new Date():(manualDate||new Date());
+  const age=calculateDetailedAge(currentBirthdate,now);
+  document.getElementById("personName").textContent=currentName;
+  const dateStr=currentBirthdate.toLocaleDateString(t.locale);
+  const timeStr=currentBirthdate.toLocaleTimeString(t.locale,{hour:"2-digit",minute:"2-digit"});
+  document.getElementById("birthInfo").textContent=t.bornOn(dateStr,timeStr);
+  ["years","months","days","hours","minutes","seconds"].forEach(k=>document.getElementById(k).textContent=age[k]);
+  const diffMs=now-currentBirthdate;
+  const totalDaysVal=Math.floor(diffMs/(1000*60*60*24));
+  document.getElementById("totalMonths").textContent=age.years*12+age.months;
+  document.getElementById("totalWeeks").textContent=Math.floor(totalDaysVal/7);
+  document.getElementById("totalDays").textContent=totalDaysVal;
+  const curMonthDays=daysInMonth(now.getFullYear(),now.getMonth());
+  const daysFracMonth=age.days+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
+  setProgress("fill-months","next-months",Math.min((daysFracMonth/curMonthDays)*100,100),t.nextMonth(curMonthDays-Math.floor(daysFracMonth)));
+  const weekFrac=(age.days%7)+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
+  setProgress("fill-weeks","next-weeks",Math.min((weekFrac/7)*100,100),t.nextWeek(7-Math.floor(weekFrac)));
+  const dayFrac=age.hours+(age.minutes/60)+(age.seconds/3600);
+  setProgress("fill-days","next-days",Math.min((dayFrac/24)*100,100),t.nextDay(24-Math.floor(dayFrac)));
+  const banner=document.getElementById("manualBanner");
+  if(!isLive&&manualDate){
+    const dStr=manualDate.toLocaleDateString(t.locale,{day:"numeric",month:"long",year:"numeric"});
+    const tStr=manualDate.toLocaleTimeString(t.locale,{hour:"2-digit",minute:"2-digit"});
+    document.getElementById("bannerDate").textContent=`${dStr}, ${tStr}`;banner.classList.add("visible");
+  }else{banner.classList.remove("visible");}
+}
+function switchToLive(){isLive=true;manualDate=null;document.getElementById("liveToggle").checked=true;document.getElementById("manualDateRow").classList.remove("visible");updateUI();}
+function handleLiveToggle(){
+  isLive=document.getElementById("liveToggle").checked;
+  const row=document.getElementById("manualDateRow");
+  if(isLive){row.classList.remove("visible");manualDate=null;}
+  else{row.classList.add("visible");const pad=n=>String(n).padStart(2,"0"),d=new Date();document.getElementById("manualDate").value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;manualDate=d;}
   updateUI();
 }
-
-function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
-
-function calculateDetailedAge(birthDate, now) {
-  let years = now.getFullYear() - birthDate.getFullYear();
-  let months = now.getMonth() - birthDate.getMonth();
-  const anchorDay = Math.min(birthDate.getDate(), daysInMonth(now.getFullYear(), now.getMonth()));
-  let days = now.getDate() - anchorDay;
-  let hours = now.getHours() - birthDate.getHours();
-  let minutes = now.getMinutes() - birthDate.getMinutes();
-  let seconds = now.getSeconds() - birthDate.getSeconds();
-
-  if (seconds < 0) { seconds += 60; minutes--; }
-  if (minutes < 0) { minutes += 60; hours--; }
-  if (hours < 0) { hours += 24; days--; }
-  if (days < 0) {
-    const previousMonth = (now.getMonth() - 1 + 12) % 12;
-    const previousMonthYear = previousMonth === 11 ? now.getFullYear() - 1 : now.getFullYear();
-    days += daysInMonth(previousMonthYear, previousMonth);
-    months--;
-  }
-  if (months < 0) { months += 12; years--; }
-  return { years, months, days, hours, minutes, seconds };
-}
-
-function updateUI() {
-  if (!currentBirthdate) return;
-  const now = isLive ? new Date() : (manualDate || new Date());
-  const age = calculateDetailedAge(currentBirthdate, now);
-
-  document.getElementById("personName").textContent = currentName;
-  const dateStr = currentBirthdate.toLocaleDateString(t.locale);
-  const timeStr = currentBirthdate.toLocaleTimeString(t.locale, { hour: "2-digit", minute: "2-digit" });
-  document.getElementById("birthInfo").textContent = t.bornOn(dateStr, timeStr);
-
-  document.getElementById("years").textContent = age.years;
-  document.getElementById("months").textContent = age.months;
-  document.getElementById("days").textContent = age.days;
-  document.getElementById("hours").textContent = age.hours;
-  document.getElementById("minutes").textContent = age.minutes;
-  document.getElementById("seconds").textContent = age.seconds;
-
-  const diffMs = now - currentBirthdate;
-  const totalDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
-  const totalWeeks = Math.floor(totalDays / 7);
-  const totalMonths = age.years * 12 + age.months;
-
-  document.getElementById("totalMonths").textContent = totalMonths;
-  document.getElementById("totalWeeks").textContent = totalWeeks;
-  document.getElementById("totalDays").textContent = totalDays;
-
-  const banner = document.getElementById("manualBanner");
-  if (!isLive && manualDate) {
-    const dStr = manualDate.toLocaleDateString(t.locale, { day: "numeric", month: "long", year: "numeric" });
-    const tStr = manualDate.toLocaleTimeString(t.locale, { hour: "2-digit", minute: "2-digit" });
-    document.getElementById("bannerDate").textContent = `${dStr}, ${tStr}`;
-    banner.classList.add("visible");
-  } else {
-    banner.classList.remove("visible");
-  }
-}
-
-// Vom Banner aus direkt zurück in den Live-Modus wechseln
-function switchToLive() {
-  isLive = true;
-  manualDate = null;
-  // Auch den Toggle im Settings-Panel synchronisieren
-  document.getElementById("liveToggle").checked = true;
-  document.getElementById("manualDateRow").classList.remove("visible");
-  updateUI();
-}
-
-function handleLiveToggle() {
-  isLive = document.getElementById("liveToggle").checked;
-  const row = document.getElementById("manualDateRow");
-  if (isLive) {
-    row.classList.remove("visible");
-    manualDate = null;
-  } else {
-    row.classList.add("visible");
-    const pad = n => String(n).padStart(2, "0");
-    const d = new Date();
-    document.getElementById("manualDate").value =
-      `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    manualDate = d;
-  }
-  updateUI();
-}
-
-function handleManualDateChange() {
-  const val = document.getElementById("manualDate").value;
-  if (val) { manualDate = new Date(val); updateUI(); }
-}
-
-function toggleOptions() {
-  const overlay = document.getElementById("optionsOverlay");
-  const isOpening = !overlay.classList.contains("visible");
-  if (isOpening) {
-    document.getElementById("customName").value = currentName;
-    if (currentBirthdate) {
-      const pad = n => String(n).padStart(2, "0");
-      const d = currentBirthdate;
-      document.getElementById("customBirthdate").value =
-        `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-    document.getElementById("liveToggle").checked = isLive;
-    document.getElementById("manualDateRow").classList.toggle("visible", !isLive);
+function handleManualDateChange(){const val=document.getElementById("manualDate").value;if(val){manualDate=new Date(val);updateUI();}}
+function toggleOptions(){
+  const overlay=document.getElementById("optionsOverlay"),opening=!overlay.classList.contains("visible");
+  if(opening){
+    document.getElementById("customName").value=currentName;
+    if(currentBirthdate){const pad=n=>String(n).padStart(2,"0"),d=currentBirthdate;document.getElementById("customBirthdate").value=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;}
+    document.getElementById("liveToggle").checked=isLive;document.getElementById("manualDateRow").classList.toggle("visible",!isLive);
   }
   overlay.classList.toggle("visible");
 }
-
-function handleOverlayClick(e) {
-  if (e.target === document.getElementById("optionsOverlay")) {
-    document.getElementById("optionsOverlay").classList.remove("visible");
-  }
-}
-
-function applyCustomData() {
-  const name = document.getElementById("customName").value.trim();
-  const birthdate = document.getElementById("customBirthdate").value;
-  if (!name || !birthdate) { alert(t.alertEmpty); return; }
-  currentName = name;
-  currentBirthdate = new Date(birthdate);
-  saveToStorage(name, currentBirthdate.toISOString());
-  updateUI();
+function handleOverlayClick(e){if(e.target===document.getElementById("optionsOverlay"))document.getElementById("optionsOverlay").classList.remove("visible");}
+function applyCustomData(){
+  const name=document.getElementById("customName").value.trim(),bd=document.getElementById("customBirthdate").value;
+  if(!name||!bd){alert(t.alertEmpty);return;}
+  currentName=name;currentBirthdate=new Date(bd);saveToStorage(name,currentBirthdate.toISOString());updateUI();
   document.getElementById("optionsOverlay").classList.remove("visible");
 }
-
 applyTranslations();
-if (loadFromStorage()) { updateUI(); } else { showSetup(); }
-setInterval(() => { if (isLive) updateUI(); }, 1000);
+if(loadFromStorage()){updateUI();}else{showSetup();}
+setInterval(()=>{if(isLive)updateUI();},1000);
 </script>
 </body>
 </html>
