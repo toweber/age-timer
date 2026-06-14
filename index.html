@@ -27,11 +27,7 @@ body.dark {
   --primary: #3b82f6;
 }
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+* { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
@@ -43,105 +39,34 @@ body {
   justify-content: center;
 }
 
-.container {
-  width: 100%;
-  max-width: 500px;
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-}
+.container { width: 100%; max-width: 500px; display: flex; flex-direction: column; gap: 18px; }
 
-.card {
-  background: var(--card);
-  backdrop-filter: blur(10px);
-  border-radius: 24px;
-  padding: 22px;
-  box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-}
+.card { background: var(--card); backdrop-filter: blur(10px); border-radius: 24px; padding: 22px; box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08); }
 
-.header {
-  position: relative;
-  text-align: center;
-  padding-top: 30px;
-  padding-bottom: 30px;
-}
+.header { position: relative; text-align: center; padding-top: 30px; padding-bottom: 30px; }
 
-/* Two icon buttons stacked in the top-right corner of the header */
-.header-icons {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  align-items: center;
-}
+.header-icons { position: absolute; top: 16px; right: 16px; display: flex; flex-direction: column; gap: 8px; align-items: center; }
 
-.theme-toggle {
-  width: 34px;
-  height: 34px;
-  border-radius: 50%;
-  border: 1px solid var(--border);
-  background: var(--box);
-  color: var(--text);
-  font-size: 0.95rem;
-  cursor: pointer;
-}
+.theme-toggle { width: 34px; height: 34px; border-radius: 50%; border: 1px solid var(--border); background: var(--box); color: var(--text); font-size: 0.95rem; cursor: pointer; }
 
-h1 {
-  font-size: 2.4rem;
-  margin-bottom: 10px;
-  font-weight: 800;
-}
+h1 { font-size: 2.4rem; margin-bottom: 10px; font-weight: 800; }
 
-.subtitle {
-  color: var(--muted);
-  font-size: 1rem;
-}
+.subtitle { color: var(--muted); font-size: 1rem; }
 
-.main-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 14px;
-}
+.main-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
 
-.time-box {
-  background: var(--box);
-  border-radius: 18px;
-  padding: 18px 12px;
-  text-align: center;
-  border: 1px solid var(--border);
-}
+.time-box { background: var(--box); border-radius: 18px; padding: 18px 12px; text-align: center; border: 1px solid var(--border); }
 
-.value {
-  font-size: 2rem;
-  font-weight: 800;
-  margin-bottom: 6px;
-}
+.value { font-size: 2rem; font-weight: 800; margin-bottom: 6px; }
 
-.label {
-  color: var(--muted);
-  font-size: 0.95rem;
-  font-weight: 500;
-}
+.label { color: var(--muted); font-size: 0.95rem; font-weight: 500; }
 
-.secondary-card {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
+.secondary-card { display: flex; justify-content: space-between; align-items: center; }
 
-.secondary-card .big {
-  font-size: 2rem;
-  font-weight: 800;
-}
+.secondary-card .big { font-size: 2rem; font-weight: 800; }
 
-.secondary-card .text {
-  color: var(--muted);
-  font-size: 1rem;
-}
+.secondary-card .text { color: var(--muted); font-size: 1rem; }
 
-/* Settings overlay – same pattern as #setupOverlay */
 #optionsOverlay {
   display: none;
   position: fixed;
@@ -152,176 +77,81 @@ h1 {
   align-items: flex-start;
   justify-content: center;
   padding: 20px;
-  padding-top: 140px; /* positions the card near the top, just below the header */
+  padding-top: 140px;
 }
 
-#optionsOverlay.visible {
-  display: flex;
-}
+#optionsOverlay.visible { display: flex; }
 
-.options {
-  background: var(--card);
-  border-radius: 24px;
-  padding: 24px;
-  width: 100%;
-  max-width: 460px;
-  display: flex;
-  flex-direction: column;
-  gap: 14px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
+.options { background: var(--card); border-radius: 24px; padding: 24px; width: 100%; max-width: 460px; display: flex; flex-direction: column; gap: 14px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
 
-input {
-  width: 100%;
-  padding: 14px;
-  border-radius: 14px;
-  border: 1px solid var(--border);
-  background: var(--box);
-  color: var(--text);
-  font-size: 1rem;
-  outline: none;
-  color-scheme: light;
-}
+input { width: 100%; padding: 14px; border-radius: 14px; border: 1px solid var(--border); background: var(--box); color: var(--text); font-size: 1rem; outline: none; color-scheme: light; }
 
-body.dark input {
-  color-scheme: dark;
-}
+body.dark input { color-scheme: dark; }
 
-button.action {
-  border: none;
-  background: var(--primary);
-  color: white;
-  padding: 14px;
-  border-radius: 14px;
-  font-size: 1rem;
-  font-weight: 700;
-  cursor: pointer;
-}
+button.action { border: none; background: var(--primary); color: white; padding: 14px; border-radius: 14px; font-size: 1rem; font-weight: 700; cursor: pointer; }
 
-/* ── Toggle switch ── */
-.toggle-row {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 4px 0;
-}
+.toggle-row { display: flex; align-items: center; justify-content: space-between; padding: 4px 0; }
+.toggle-row .toggle-label { font-size: 1rem; color: var(--text); }
+.toggle-row .toggle-label span { color: var(--muted); font-size: 0.85rem; margin-left: 6px; }
 
-.toggle-row .toggle-label {
-  font-size: 1rem;
-  color: var(--text);
-}
+.switch { position: relative; width: 48px; height: 26px; flex-shrink: 0; }
+.switch input { opacity: 0; width: 0; height: 0; position: absolute; }
 
-.toggle-row .toggle-label span {
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-left: 6px;
-}
+.slider { position: absolute; inset: 0; background: var(--border); border-radius: 999px; cursor: pointer; transition: background 0.2s; }
+.slider::before { content: ""; position: absolute; width: 20px; height: 20px; left: 3px; top: 3px; background: white; border-radius: 50%; transition: transform 0.2s; }
+.switch input:checked + .slider { background: var(--primary); }
+.switch input:checked + .slider::before { transform: translateX(22px); }
 
-.switch {
-  position: relative;
-  width: 48px;
-  height: 26px;
-  flex-shrink: 0;
-}
+.divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-.switch input {
-  opacity: 0;
-  width: 0;
-  height: 0;
-  position: absolute;
-}
+#manualDateRow { display: none; flex-direction: column; gap: 8px; }
+#manualDateRow.visible { display: flex; }
+#manualDateRow .section-label { font-size: 0.85rem; color: var(--muted); }
 
-.slider {
-  position: absolute;
-  inset: 0;
-  background: var(--border);
-  border-radius: 999px;
-  cursor: pointer;
-  transition: background 0.2s;
-}
-
-.slider::before {
-  content: "";
-  position: absolute;
-  width: 20px;
-  height: 20px;
-  left: 3px;
-  top: 3px;
-  background: white;
-  border-radius: 50%;
-  transition: transform 0.2s;
-}
-
-.switch input:checked + .slider {
-  background: var(--primary);
-}
-
-.switch input:checked + .slider::before {
-  transform: translateX(22px);
-}
-
-.divider {
-  height: 1px;
-  background: var(--border);
-  margin: 4px 0;
-}
-
-#manualDateRow {
-  display: none;
-  flex-direction: column;
-  gap: 8px;
-}
-
-#manualDateRow.visible {
-  display: flex;
-}
-
-#manualDateRow .section-label {
-  font-size: 0.85rem;
-  color: var(--muted);
-}
-
-.footer-note {
-  text-align: center;
-  color: var(--muted);
-  font-size: 0.85rem;
-  margin-top: 8px;
-}
+.footer-note { text-align: center; color: var(--muted); font-size: 0.85rem; margin-top: 8px; }
 
 /* ── Manual date banner ── */
 #manualBanner {
   display: none;
-  align-items: center;
-  gap: 10px;
+  flex-direction: column;
+  gap: 12px;
   background: rgba(245, 158, 11, 0.12);
   border: 1px solid rgba(245, 158, 11, 0.35);
   border-radius: 16px;
-  padding: 12px 16px;
+  padding: 14px 16px;
   font-size: 0.9rem;
   color: var(--text);
 }
 
-#manualBanner.visible {
-  display: flex;
-}
+#manualBanner.visible { display: flex; }
 
-#manualBanner .banner-icon {
-  font-size: 1.1rem;
-  flex-shrink: 0;
-}
+.banner-top { display: flex; align-items: center; gap: 10px; }
 
-#manualBanner .banner-text {
-  flex: 1;
-  color: var(--muted);
-  line-height: 1.4;
-}
+.banner-icon { font-size: 1.1rem; flex-shrink: 0; }
 
-#manualBanner .banner-text strong {
-  display: block;
+.banner-text { flex: 1; color: var(--muted); line-height: 1.4; }
+.banner-text strong { display: block; color: var(--text); font-weight: 700; font-size: 0.95rem; }
+
+/* Live-Modus-Button im Banner */
+#backToLiveBtn {
+  border: none;
+  background: rgba(245, 158, 11, 0.22);
   color: var(--text);
+  padding: 9px 14px;
+  border-radius: 12px;
+  font-size: 0.88rem;
   font-weight: 700;
-  font-size: 0.95rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  justify-content: center;
+  transition: background 0.15s;
 }
+
+#backToLiveBtn:hover { background: rgba(245, 158, 11, 0.38); }
+
 #setupOverlay {
   display: none;
   position: fixed;
@@ -334,39 +164,15 @@ button.action {
   padding: 20px;
 }
 
-#setupOverlay.visible {
-  display: flex;
-}
+#setupOverlay.visible { display: flex; }
 
-#setupBox {
-  background: var(--card);
-  border-radius: 24px;
-  padding: 28px 24px;
-  width: 100%;
-  max-width: 420px;
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-}
-
-#setupBox h2 {
-  font-size: 1.5rem;
-  font-weight: 800;
-  text-align: center;
-}
-
-#setupBox p {
-  color: var(--muted);
-  font-size: 0.95rem;
-  text-align: center;
-  margin-top: -6px;
-}
+#setupBox { background: var(--card); border-radius: 24px; padding: 28px 24px; width: 100%; max-width: 420px; display: flex; flex-direction: column; gap: 16px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); }
+#setupBox h2 { font-size: 1.5rem; font-weight: 800; text-align: center; }
+#setupBox p { color: var(--muted); font-size: 0.95rem; text-align: center; margin-top: -6px; }
 </style>
 </head>
 <body>
 
-<!-- First-run setup overlay -->
 <div id="setupOverlay">
   <div id="setupBox" class="card">
     <h2 id="t-setupTitle"></h2>
@@ -380,7 +186,6 @@ button.action {
 <div class="container">
 
   <div class="card header">
-    <!-- Theme toggle and settings button stacked in top-right corner -->
     <div class="header-icons">
       <button class="theme-toggle" id="themeToggleBtn" onclick="toggleTheme()">🌙</button>
       <button class="theme-toggle" onclick="toggleOptions()">⚙️</button>
@@ -389,41 +194,28 @@ button.action {
     <div class="subtitle" id="birthInfo"></div>
   </div>
 
-  <!-- Manual date banner – shown when live mode is off -->
+  <!-- Manual date banner -->
   <div id="manualBanner">
-    <div class="banner-icon">📅</div>
-    <div class="banner-text">
-      <strong id="bannerDate"></strong>
-      <span id="t-bannerLabel"></span>
+    <div class="banner-top">
+      <div class="banner-icon">📅</div>
+      <div class="banner-text">
+        <strong id="bannerDate"></strong>
+        <span id="t-bannerLabel"></span>
+      </div>
     </div>
+    <button id="backToLiveBtn" onclick="switchToLive()">
+      ▶ <span id="t-backToLive"></span>
+    </button>
   </div>
 
   <div class="card">
     <div class="main-grid">
-      <div class="time-box">
-        <div class="value" id="years">0</div>
-        <div class="label" id="t-years"></div>
-      </div>
-      <div class="time-box">
-        <div class="value" id="months">0</div>
-        <div class="label" id="t-months"></div>
-      </div>
-      <div class="time-box">
-        <div class="value" id="days">0</div>
-        <div class="label" id="t-days"></div>
-      </div>
-      <div class="time-box">
-        <div class="value" id="hours">0</div>
-        <div class="label" id="t-hours"></div>
-      </div>
-      <div class="time-box">
-        <div class="value" id="minutes">0</div>
-        <div class="label" id="t-minutes"></div>
-      </div>
-      <div class="time-box">
-        <div class="value" id="seconds">0</div>
-        <div class="label" id="t-seconds"></div>
-      </div>
+      <div class="time-box"><div class="value" id="years">0</div><div class="label" id="t-years"></div></div>
+      <div class="time-box"><div class="value" id="months">0</div><div class="label" id="t-months"></div></div>
+      <div class="time-box"><div class="value" id="days">0</div><div class="label" id="t-days"></div></div>
+      <div class="time-box"><div class="value" id="hours">0</div><div class="label" id="t-hours"></div></div>
+      <div class="time-box"><div class="value" id="minutes">0</div><div class="label" id="t-minutes"></div></div>
+      <div class="time-box"><div class="value" id="seconds">0</div><div class="label" id="t-seconds"></div></div>
     </div>
   </div>
 
@@ -442,7 +234,6 @@ button.action {
     <div class="big" id="totalDays">0</div>
   </div>
 
-  <!-- Settings overlay -->
   <div id="optionsOverlay" onclick="handleOverlayClick(event)">
     <div class="options" id="optionsMenu">
       <h2 id="t-settingsTitle"></h2>
@@ -453,7 +244,6 @@ button.action {
 
       <div class="divider"></div>
 
-      <!-- Live / manual date toggle -->
       <div class="toggle-row">
         <div class="toggle-label" id="t-liveLabel"></div>
         <label class="switch">
@@ -472,53 +262,26 @@ button.action {
 </div>
 
 <script>
-// ── i18n ──────────────────────────────────────────────────────────────────
 const TRANSLATIONS = {
   de: {
-    years: "Jahre",
-    months: "Monate",
-    days: "Tage",
-    hours: "Stunden",
-    minutes: "Minuten",
-    seconds: "Sekunden",
-    totalMonths: "Gesamt in Monaten",
-    totalWeeks: "Gesamt in Wochen",
-    totalDays: "Gesamt in Tagen",
-    setupTitle: "👤 Willkommen!",
-    setupDesc: "Gib den Namen und Geburtstag der Person ein. Diese Daten werden lokal gespeichert.",
-    setupBtn: "Speichern & starten",
-    settingsTitle: "Daten ändern",
-    saveBtn: "Speichern",
-    saveNote: "Die Änderungen werden dauerhaft gespeichert.",
-    alertEmpty: "Bitte Namen und Geburtstag eingeben.",
-    liveLabel: "Live",
-    manualLabel: "Alter berechnen zum Datum:",
-    bannerLabel: "Kein Live-Modus – Alter zu diesem Datum",
-    bornOn: (date, time) => `Geboren am ${date} um ${time} Uhr`,
-    locale: "de-DE",
+    years: "Jahre", months: "Monate", days: "Tage", hours: "Stunden", minutes: "Minuten", seconds: "Sekunden",
+    totalMonths: "Gesamt in Monaten", totalWeeks: "Gesamt in Wochen", totalDays: "Gesamt in Tagen",
+    setupTitle: "👤 Willkommen!", setupDesc: "Gib den Namen und Geburtstag der Person ein. Diese Daten werden lokal gespeichert.",
+    setupBtn: "Speichern & starten", settingsTitle: "Daten ändern", saveBtn: "Speichern",
+    saveNote: "Die Änderungen werden dauerhaft gespeichert.", alertEmpty: "Bitte Namen und Geburtstag eingeben.",
+    liveLabel: "Live", manualLabel: "Alter berechnen zum Datum:", bannerLabel: "Kein Live-Modus – Alter zu diesem Datum",
+    backToLive: "Zurück zum Live-Modus",
+    bornOn: (date, time) => `Geboren am ${date} um ${time} Uhr`, locale: "de-DE",
   },
   en: {
-    years: "Years",
-    months: "Months",
-    days: "Days",
-    hours: "Hours",
-    minutes: "Minutes",
-    seconds: "Seconds",
-    totalMonths: "Total months",
-    totalWeeks: "Total weeks",
-    totalDays: "Total days",
-    setupTitle: "👤 Welcome!",
-    setupDesc: "Enter the name and date of birth of the person. This data is stored locally.",
-    setupBtn: "Save & start",
-    settingsTitle: "Edit data",
-    saveBtn: "Save",
-    saveNote: "Changes are saved permanently.",
-    alertEmpty: "Please enter a name and date of birth.",
-    liveLabel: "Live",
-    manualLabel: "Calculate age at date:",
-    bannerLabel: "Not live – age at this date",
-    bornOn: (date, time) => `Born on ${date} at ${time}`,
-    locale: "en-GB",
+    years: "Years", months: "Months", days: "Days", hours: "Hours", minutes: "Minutes", seconds: "Seconds",
+    totalMonths: "Total months", totalWeeks: "Total weeks", totalDays: "Total days",
+    setupTitle: "👤 Welcome!", setupDesc: "Enter the name and date of birth of the person. This data is stored locally.",
+    setupBtn: "Save & start", settingsTitle: "Edit data", saveBtn: "Save",
+    saveNote: "Changes are saved permanently.", alertEmpty: "Please enter a name and date of birth.",
+    liveLabel: "Live", manualLabel: "Calculate age at date:", bannerLabel: "Not live – age at this date",
+    backToLive: "Back to live mode",
+    bornOn: (date, time) => `Born on ${date} at ${time}`, locale: "en-GB",
   },
 };
 
@@ -545,9 +308,9 @@ function applyTranslations() {
   document.getElementById("t-liveLabel").textContent = t.liveLabel;
   document.getElementById("t-manualLabel").textContent = t.manualLabel;
   document.getElementById("t-bannerLabel").textContent = t.bannerLabel;
+  document.getElementById("t-backToLive").textContent = t.backToLive;
 }
 
-// ── Storage ───────────────────────────────────────────────────────────────
 const STORAGE_KEY_NAME = "timer_name";
 const STORAGE_KEY_BIRTHDATE = "timer_birthdate";
 let currentName = "";
@@ -558,11 +321,7 @@ let manualDate = null;
 function loadFromStorage() {
   const name = localStorage.getItem(STORAGE_KEY_NAME);
   const birthdate = localStorage.getItem(STORAGE_KEY_BIRTHDATE);
-  if (name && birthdate) {
-    currentName = name;
-    currentBirthdate = new Date(birthdate);
-    return true;
-  }
+  if (name && birthdate) { currentName = name; currentBirthdate = new Date(birthdate); return true; }
   return false;
 }
 
@@ -571,7 +330,6 @@ function saveToStorage(name, birthdateISO) {
   localStorage.setItem(STORAGE_KEY_BIRTHDATE, birthdateISO);
 }
 
-// ── Theme ─────────────────────────────────────────────────────────────────
 function applyTheme(isDark) {
   document.body.classList.toggle("dark", isDark);
   document.getElementById("themeToggleBtn").textContent = isDark ? "☀️" : "🌙";
@@ -585,18 +343,12 @@ function toggleTheme() {
 
 applyTheme(localStorage.getItem("theme") === "dark");
 
-// ── First-run setup ───────────────────────────────────────────────────────
-function showSetup() {
-  document.getElementById("setupOverlay").classList.add("visible");
-}
+function showSetup() { document.getElementById("setupOverlay").classList.add("visible"); }
 
 function saveSetup() {
   const name = document.getElementById("setupName").value.trim();
   const birthdate = document.getElementById("setupBirthdate").value;
-  if (!name || !birthdate) {
-    alert(t.alertEmpty);
-    return;
-  }
+  if (!name || !birthdate) { alert(t.alertEmpty); return; }
   saveToStorage(name, new Date(birthdate).toISOString());
   currentName = name;
   currentBirthdate = new Date(birthdate);
@@ -604,10 +356,7 @@ function saveSetup() {
   updateUI();
 }
 
-// ── Age calculation ───────────────────────────────────────────────────────
-function daysInMonth(year, month) {
-  return new Date(year, month + 1, 0).getDate();
-}
+function daysInMonth(year, month) { return new Date(year, month + 1, 0).getDate(); }
 
 function calculateDetailedAge(birthDate, now) {
   let years = now.getFullYear() - birthDate.getFullYear();
@@ -628,11 +377,9 @@ function calculateDetailedAge(birthDate, now) {
     months--;
   }
   if (months < 0) { months += 12; years--; }
-
   return { years, months, days, hours, minutes, seconds };
 }
 
-// ── UI update ─────────────────────────────────────────────────────────────
 function updateUI() {
   if (!currentBirthdate) return;
   const now = isLive ? new Date() : (manualDate || new Date());
@@ -659,19 +406,27 @@ function updateUI() {
   document.getElementById("totalWeeks").textContent = totalWeeks;
   document.getElementById("totalDays").textContent = totalDays;
 
-  // Banner
   const banner = document.getElementById("manualBanner");
   if (!isLive && manualDate) {
-    const dateStr = manualDate.toLocaleDateString(t.locale, { day: "numeric", month: "long", year: "numeric" });
-    const timeStr = manualDate.toLocaleTimeString(t.locale, { hour: "2-digit", minute: "2-digit" });
-    document.getElementById("bannerDate").textContent = `${dateStr}, ${timeStr}`;
+    const dStr = manualDate.toLocaleDateString(t.locale, { day: "numeric", month: "long", year: "numeric" });
+    const tStr = manualDate.toLocaleTimeString(t.locale, { hour: "2-digit", minute: "2-digit" });
+    document.getElementById("bannerDate").textContent = `${dStr}, ${tStr}`;
     banner.classList.add("visible");
   } else {
     banner.classList.remove("visible");
   }
 }
 
-// ── Live / manual date toggle ─────────────────────────────────────────────
+// Vom Banner aus direkt zurück in den Live-Modus wechseln
+function switchToLive() {
+  isLive = true;
+  manualDate = null;
+  // Auch den Toggle im Settings-Panel synchronisieren
+  document.getElementById("liveToggle").checked = true;
+  document.getElementById("manualDateRow").classList.remove("visible");
+  updateUI();
+}
+
 function handleLiveToggle() {
   isLive = document.getElementById("liveToggle").checked;
   const row = document.getElementById("manualDateRow");
@@ -680,7 +435,6 @@ function handleLiveToggle() {
     manualDate = null;
   } else {
     row.classList.add("visible");
-    // Pre-fill with current date/time
     const pad = n => String(n).padStart(2, "0");
     const d = new Date();
     document.getElementById("manualDate").value =
@@ -692,13 +446,9 @@ function handleLiveToggle() {
 
 function handleManualDateChange() {
   const val = document.getElementById("manualDate").value;
-  if (val) {
-    manualDate = new Date(val);
-    updateUI();
-  }
+  if (val) { manualDate = new Date(val); updateUI(); }
 }
 
-// ── Settings panel ────────────────────────────────────────────────────────
 function toggleOptions() {
   const overlay = document.getElementById("optionsOverlay");
   const isOpening = !overlay.classList.contains("visible");
@@ -710,7 +460,6 @@ function toggleOptions() {
       document.getElementById("customBirthdate").value =
         `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}T${pad(d.getHours())}:${pad(d.getMinutes())}`;
     }
-    // Sync toggle state
     document.getElementById("liveToggle").checked = isLive;
     document.getElementById("manualDateRow").classList.toggle("visible", !isLive);
   }
@@ -718,7 +467,6 @@ function toggleOptions() {
 }
 
 function handleOverlayClick(e) {
-  // Close when clicking the backdrop, not the card itself
   if (e.target === document.getElementById("optionsOverlay")) {
     document.getElementById("optionsOverlay").classList.remove("visible");
   }
@@ -727,10 +475,7 @@ function handleOverlayClick(e) {
 function applyCustomData() {
   const name = document.getElementById("customName").value.trim();
   const birthdate = document.getElementById("customBirthdate").value;
-  if (!name || !birthdate) {
-    alert(t.alertEmpty);
-    return;
-  }
+  if (!name || !birthdate) { alert(t.alertEmpty); return; }
   currentName = name;
   currentBirthdate = new Date(birthdate);
   saveToStorage(name, currentBirthdate.toISOString());
@@ -738,13 +483,8 @@ function applyCustomData() {
   document.getElementById("optionsOverlay").classList.remove("visible");
 }
 
-// ── Init ──────────────────────────────────────────────────────────────────
 applyTranslations();
-if (loadFromStorage()) {
-  updateUI();
-} else {
-  showSetup();
-}
+if (loadFromStorage()) { updateUI(); } else { showSetup(); }
 setInterval(() => { if (isLive) updateUI(); }, 1000);
 </script>
 </body>
