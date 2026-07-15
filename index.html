@@ -285,14 +285,42 @@ function saveSetup(){
 }
 function togglePin(card){card.classList.toggle("pinned");}
 function daysInMonth(y,m){return new Date(y,m+1,0).getDate();}
+
+// Fügt n Monate zu einem Datum hinzu und klemmt den Tag auf die Länge
+// des Zielmonats (z.B. 31. Jan + 1 Monat -> 28./29. Feb statt 3. März).
+function addMonthsClamped(date,n){
+  const d=new Date(date);
+  const totalMonth=d.getMonth()+n;
+  const targetYear=d.getFullYear()+Math.floor(totalMonth/12);
+  const targetMonth=((totalMonth%12)+12)%12;
+  const targetDay=Math.min(d.getDate(),daysInMonth(targetYear,targetMonth));
+  const result=new Date(d);
+  result.setFullYear(targetYear,targetMonth,targetDay);
+  return result;
+}
+
+// Berechnet Jahre/Monate/Tage/Stunden/Minuten/Sekunden zwischen birth und now.
+// Statt Monats-Differenzen "kalendarisch" zu subtrahieren (was bei Geburtstagen
+// am 29./30./31. durch unterschiedliche Monatslängen zu Off-by-one-Fehlern führt),
+// wird zuerst der letzte gültige "Monats-Jubiläums"-Zeitpunkt (anchor) bestimmt und
+// die restliche Differenz (Tage/Std/Min/Sek) direkt aus der Millisekunden-Differenz
+// zu diesem Anker berechnet. Das ist über beliebige Monatslängen hinweg konsistent.
 function calculateDetailedAge(birth,now){
-  let years=now.getFullYear()-birth.getFullYear(),months=now.getMonth()-birth.getMonth();
-  const anchorDay=Math.min(birth.getDate(),daysInMonth(now.getFullYear(),now.getMonth()));
-  let days=now.getDate()-anchorDay,hours=now.getHours()-birth.getHours(),
-      minutes=now.getMinutes()-birth.getMinutes(),seconds=now.getSeconds()-birth.getSeconds();
-  if(seconds<0){seconds+=60;minutes--;}if(minutes<0){minutes+=60;hours--;}if(hours<0){hours+=24;days--;}
-  if(days<0){const pm=(now.getMonth()-1+12)%12,pmy=pm===11?now.getFullYear()-1:now.getFullYear();days+=daysInMonth(pmy,pm);months--;}
-  if(months<0){months+=12;years--;}
+  let totalMonths=(now.getFullYear()-birth.getFullYear())*12+(now.getMonth()-birth.getMonth());
+  let anchor=addMonthsClamped(birth,totalMonths);
+  anchor.setHours(birth.getHours(),birth.getMinutes(),birth.getSeconds(),birth.getMilliseconds());
+  if(anchor.getTime()>now.getTime()){
+    totalMonths--;
+    anchor=addMonthsClamped(birth,totalMonths);
+    anchor.setHours(birth.getHours(),birth.getMinutes(),birth.getSeconds(),birth.getMilliseconds());
+  }
+  const years=Math.floor(totalMonths/12),months=((totalMonths%12)+12)%12;
+  const diffMs=now.getTime()-anchor.getTime();
+  const days=Math.floor(diffMs/86400000);
+  let rem=diffMs-days*86400000;
+  const hours=Math.floor(rem/3600000);rem-=hours*3600000;
+  const minutes=Math.floor(rem/60000);rem-=minutes*60000;
+  const seconds=Math.floor(rem/1000);
   return{years,months,days,hours,minutes,seconds};
 }
 function setProgress(fillId,nextId,pct,nextLabel){
@@ -316,6 +344,9 @@ function updateUI(){
   const curMonthDays=daysInMonth(now.getFullYear(),now.getMonth());
   const daysFracMonth=age.days+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
   setProgress("fill-months","next-months",Math.min((daysFracMonth/curMonthDays)*100,100),t.nextMonth(curMonthDays-Math.floor(daysFracMonth)));
+  // Wochen-Fortschritt: auf Basis der durchgehend gezählten Gesamttage (totalDaysVal),
+  // NICHT auf Basis von age.days (das ist die Monats-Tage-Komponente und hat keinen
+  // 7-Tage-Zyklus - das war der ursprüngliche Bug).
   const weekFrac=(totalDaysVal%7)+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
   setProgress("fill-weeks","next-weeks",Math.min((weekFrac/7)*100,100),t.nextWeek(7-Math.floor(weekFrac)));
   const dayFrac=age.hours+(age.minutes/60)+(age.seconds/3600);
