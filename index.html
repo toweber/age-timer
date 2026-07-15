@@ -316,7 +316,7 @@ function updateUI(){
   const curMonthDays=daysInMonth(now.getFullYear(),now.getMonth());
   const daysFracMonth=age.days+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
   setProgress("fill-months","next-months",Math.min((daysFracMonth/curMonthDays)*100,100),t.nextMonth(curMonthDays-Math.floor(daysFracMonth)));
-  const weekFrac=(age.days%7)+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
+  const weekFrac=(totalDaysVal%7)+(age.hours/24)+(age.minutes/1440)+(age.seconds/86400);
   setProgress("fill-weeks","next-weeks",Math.min((weekFrac/7)*100,100),t.nextWeek(7-Math.floor(weekFrac)));
   const dayFrac=age.hours+(age.minutes/60)+(age.seconds/3600);
   setProgress("fill-days","next-days",Math.min((dayFrac/24)*100,100),t.nextDay(24-Math.floor(dayFrac)));
